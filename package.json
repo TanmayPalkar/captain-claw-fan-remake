@@ -1,0 +1,11 @@
+{
+  "name": "captain-claw-pirate-isle",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A fan-made 1997-style 2D pirate platformer built with HTML5 Canvas and vanilla JavaScript.",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  }
+}

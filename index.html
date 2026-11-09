@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0a0c0a" />
+  <link rel="icon" href="data:," />
+  <title>Captain Claw — Pirate Isle</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <div id="game-shell">
+      <canvas id="game" width="1280" height="720" aria-label="Captain Claw pirate platformer game"></canvas>
+
+      <!-- ============================ HUD ============================ -->
+      <div id="hud" class="hud hidden" aria-live="polite">
+        <div class="hud-top">
+          <div class="hud-cluster hud-left">
+            <div class="portrait" aria-hidden="true">
+              <span class="portrait-hat"></span>
+              <span class="portrait-face">•ᴗ•</span>
+            </div>
+            <div class="health-block">
+              <div class="hud-label">VITALITY</div>
+              <div class="health-track">
+                <div id="health-ghost" class="health-ghost"></div>
+                <div id="health-fill" class="health-fill"></div>
+                <div class="health-shine"></div>
+              </div>
+              <div class="hud-small"><span class="lives-heart">♥</span> <span id="lives">3</span> LIVES</div>
+            </div>
+          </div>
+
+          <div class="hud-cluster hud-center">
+            <div class="level-banner">
+              <span class="banner-wing">✦</span>
+              <div class="banner-copy">
+                <div class="hud-label">PIRATE ISLE</div>
+                <div id="section-name">COASTAL ARRIVAL</div>
+              </div>
+              <span class="banner-wing">✦</span>
+            </div>
+            <div class="score-line">SCORE <span id="score">000000</span></div>
+          </div>
+
+          <div class="hud-cluster hud-right">
+            <div class="loot-line"><span class="loot-icon">◆</span> LOOT <span id="loot">0 / 0</span></div>
+            <div class="weapon-line"><span class="weapon-icon">⚔</span> CUTLASS <kbd>X</kbd></div>
+            <div class="weapon-line secondary-line"><span class="weapon-icon">➶</span> KNIFE <kbd>C</kbd></div>
+            <div class="cooldown-track"><div id="cooldown-fill" class="cooldown-fill"></div></div>
+          </div>
+        </div>
+
+        <div id="boss-bar" class="boss-bar hidden">
+          <div class="boss-name"><span>⚓</span> IRONJAW <span>⚓</span></div>
+          <div class="boss-track">
+            <div id="boss-ghost" class="boss-ghost"></div>
+            <div id="boss-fill" class="boss-fill"></div>
+          </div>
+        </div>
+
+        <div id="toast" class="toast hidden"></div>
+        <div id="tutorial" class="tutorial hidden"></div>
+      </div>
+
+      <!-- ============================ MAIN MENU ============================ -->
+      <div id="menu" class="overlay menu-overlay">
+        <div class="menu-vignette"></div>
+        <div class="menu-content">
+          <div class="eyebrow">A FAN-MADE 1997-STYLE PIRATE ADVENTURE</div>
+          <h1 class="game-logo">
+            <span class="logo-small">CAPTAIN</span>
+            <span class="logo-main">CLAW</span>
+          </h1>
+          <div class="logo-rule"><span></span><em>THE CURSE OF PIRATE ISLE</em><span></span></div>
+          <p class="menu-blurb">Storm the coast, cut down the mutineers, and claim Ironjaw's hidden hoard.</p>
+          <div class="menu-buttons">
+            <button id="btn-start" class="menu-btn primary" type="button"><span>⚓</span> START GAME</button>
+            <button id="btn-controls" class="menu-btn" type="button">CONTROLS</button>
+            <button id="btn-sound-menu" class="menu-btn" type="button">SOUND: ON</button>
+          </div>
+          <div class="menu-footer">
+            <span>60 FPS · CANVAS · ORIGINAL PROCEDURAL ART &amp; AUDIO</span>
+            <span class="menu-hint">PRESS ENTER TO SET SAIL</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================ PAUSE ============================ -->
+      <div id="pause-menu" class="overlay modal-overlay hidden">
+        <div class="modal parchment">
+          <div class="modal-ornament">✦ ✦ ✦</div>
+          <h2>PAUSED</h2>
+          <p class="modal-sub">The tide waits for no cat.</p>
+          <div class="modal-buttons">
+            <button id="btn-resume" class="menu-btn primary" type="button">RESUME</button>
+            <button id="btn-restart-pause" class="menu-btn" type="button">RESTART LEVEL</button>
+            <button id="btn-sound-pause" class="menu-btn" type="button">SOUND: ON</button>
+            <button id="btn-quit-pause" class="menu-btn subtle" type="button">MAIN MENU</button>
+          </div>
+          <div class="modal-tip">ESC to return to the hunt</div>
+        </div>
+      </div>
+
+      <!-- ============================ GAME OVER ============================ -->
+      <div id="gameover-menu" class="overlay modal-overlay hidden">
+        <div class="modal parchment dark-parchment">
+          <div class="modal-ornament skull-mark">☠</div>
+          <h2>WALKED THE PLANK</h2>
+          <p class="modal-sub">The sea claims another captain...</p>
+          <div class="result-grid">
+            <span>SCORE</span><strong id="gameover-score">0</strong>
+            <span>LOOT RECOVERED</span><strong id="gameover-loot">0</strong>
+            <span>TIME AT SEA</span><strong id="gameover-time">0:00</strong>
+          </div>
+          <div class="modal-buttons">
+            <button id="btn-restart-gameover" class="menu-btn primary" type="button">TRY AGAIN</button>
+            <button id="btn-quit-gameover" class="menu-btn subtle" type="button">MAIN MENU</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================ VICTORY ============================ -->
+      <div id="victory-menu" class="overlay modal-overlay hidden">
+        <div class="modal parchment victory-parchment">
+          <div class="modal-ornament">⚓</div>
+          <div class="victory-kicker">LEVEL 1 COMPLETE</div>
+          <h2>PIRATE ISLE</h2>
+          <p class="modal-sub">Ironjaw is beaten. The treasure is yours, Captain.</p>
+          <div class="result-grid">
+            <span>FINAL SCORE</span><strong id="victory-score">0</strong>
+            <span>LOOT</span><strong id="victory-loot">0 / 0</strong>
+            <span>TIME</span><strong id="victory-time">0:00</strong>
+            <span>ENEMIES DEFEATED</span><strong id="victory-kills">0</strong>
+          </div>
+          <div class="victory-bonus">TREASURE BONUS <strong id="victory-bonus">+0</strong></div>
+          <div class="modal-buttons">
+            <button id="btn-play-again" class="menu-btn primary" type="button">SAIL AGAIN</button>
+            <button id="btn-quit-victory" class="menu-btn subtle" type="button">MAIN MENU</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================ CONTROLS ============================ -->
+      <div id="controls-menu" class="overlay modal-overlay hidden">
+        <div class="modal parchment controls-parchment">
+          <div class="modal-ornament">✦</div>
+          <h2>SHIP'S ORDERS</h2>
+          <div class="controls-grid">
+            <div class="control-row"><kbd>←</kbd><kbd>A</kbd><span>Move left</span></div>
+            <div class="control-row"><kbd>→</kbd><kbd>D</kbd><span>Move right</span></div>
+            <div class="control-row"><kbd>SPACE</kbd><span>Jump (hold for height)</span></div>
+            <div class="control-row"><kbd>X</kbd><span>Cutlass combo</span></div>
+            <div class="control-row"><kbd>C</kbd><span>Throw knife</span></div>
+            <div class="control-row"><kbd>↓</kbd><kbd>S</kbd><span>Crouch</span></div>
+            <div class="control-row"><kbd>SHIFT</kbd><span>Sprint</span></div>
+            <div class="control-row"><kbd>ESC</kbd><span>Pause</span></div>
+          </div>
+          <p class="controls-note">Find the chests. Cut down every pirate. Defeat Ironjaw at the stronghold gate.</p>
+          <button id="btn-controls-back" class="menu-btn primary" type="button">BACK</button>
+        </div>
+      </div>
+
+      <!-- ============================ LEVEL INTRO ============================ -->
+      <div id="level-intro" class="level-intro hidden">
+        <div class="intro-rule"></div>
+        <div class="intro-kicker">CHAPTER ONE</div>
+        <h2>PIRATE ISLE</h2>
+        <p>Coastal Arrival</p>
+        <div class="intro-rule"></div>
+      </div>
+    </div>
+    <div id="rotate-hint">Rotate your device to landscape for the full adventure.</div>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
